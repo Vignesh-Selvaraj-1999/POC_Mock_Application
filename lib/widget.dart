@@ -20,6 +20,7 @@ class GenericPaginatedDropdown<T> extends StatefulWidget {
     this.fontFamily,
     this.searchable = true,
     this.heading,
+    this.viewportKey,
   });
 
   final FetchItems<T> fetchItems;
@@ -33,6 +34,7 @@ class GenericPaginatedDropdown<T> extends StatefulWidget {
   final String? fontFamily;
   final bool searchable;
   final Widget? heading;
+  final GlobalKey? viewportKey;
   @override
   GenericPaginatedDropdownState<T> createState() => GenericPaginatedDropdownState<T>();
 }
@@ -79,15 +81,25 @@ class GenericPaginatedDropdownState<T> extends State<GenericPaginatedDropdown<T>
 
   double _spaceBelow(RenderBox anchorBox) {
     final anchorBottom = anchorBox.localToGlobal(Offset.zero).dy + anchorBox.size.height;
-    final screenHeight = MediaQuery.of(context).size.height;
-    return screenHeight - anchorBottom;
+    final double bottomLimit = widget.viewportKey != null
+        ? (widget.viewportKey!.currentContext!.findRenderObject() as RenderBox)
+        .localToGlobal(Offset.zero)
+        .dy
+        + (widget.viewportKey!.currentContext!.size!.height)
+        : MediaQuery.of(context).size.height;
+    return bottomLimit - anchorBottom;
   }
 
-  /// How many pixels are free above the anchor until the top of the screen.
   double _spaceAbove(RenderBox anchorBox) {
     final anchorTop = anchorBox.localToGlobal(Offset.zero).dy;
-    return anchorTop;
+    final double topLimit = widget.viewportKey != null
+        ? (widget.viewportKey!.currentContext!.findRenderObject() as RenderBox)
+        .localToGlobal(Offset.zero)
+        .dy
+        : 0.0;
+    return anchorTop - topLimit;
   }
+
 
   @override
   void didUpdateWidget(covariant GenericPaginatedDropdown<T> oldWidget) {
@@ -131,6 +143,8 @@ class GenericPaginatedDropdownState<T> extends State<GenericPaginatedDropdown<T>
       _animController.forward(from: 0);
       Future.microtask(() => _overlayScope.requestFocus());
     }
+    debugPrint('below=${_spaceBelow(box)}  above=${_spaceAbove(box)}');
+
   }
 
   void _collapse() {
@@ -313,7 +327,7 @@ class GenericPaginatedDropdownState<T> extends State<GenericPaginatedDropdown<T>
                           itemCount: totalCount,
                           itemBuilder: (context, index) {
                             int idx = index;
-      
+
                             if (showSel && idx == 0) {
                               // Currently selected
                               return Container(
@@ -338,15 +352,15 @@ class GenericPaginatedDropdownState<T> extends State<GenericPaginatedDropdown<T>
                                 ),
                               );
                             }
-      
+
                             if (showSel && idx == 1 && _items.isNotEmpty) {
                               return const Divider(height: 1, thickness: 1);
                             }
-      
+
                             if (showSel) {
                               idx -= (1 + (_items.isNotEmpty ? 1 : 0));
                             }
-      
+
                             if (idx < _items.length) {
                               final item = _items[idx];
                               return ListTile(
@@ -358,7 +372,7 @@ class GenericPaginatedDropdownState<T> extends State<GenericPaginatedDropdown<T>
                                 onTap: () => _selectItem(item),
                               );
                             }
-      
+
                             // loading indicator
                             return const Padding(
                               padding: EdgeInsets.symmetric(vertical: 12),

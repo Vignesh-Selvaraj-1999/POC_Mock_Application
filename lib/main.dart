@@ -27,7 +27,8 @@ class DropdownTestScreen extends StatefulWidget {
 
 class _DropdownTestScreenState extends State<DropdownTestScreen> {
   String? _selectedName;
-  bool   _loadingInitial = true;
+  bool _loadingInitial = true;
+  final GlobalKey _vpKey = GlobalKey();
 
   // ──────────────────────────────────────────────────────────────────────────
   // 1️⃣  Simulate an API that tells us which value is currently selected.
@@ -37,11 +38,10 @@ class _DropdownTestScreenState extends State<DropdownTestScreen> {
     await Future.delayed(const Duration(seconds: 2));
     final String valueFromApi = 'Name 39';
     setState(() {
-      _selectedName   = valueFromApi;
+      _selectedName = valueFromApi;
       _loadingInitial = false;
     });
   }
-
 
   Future<List<String>> _fetchNames(int page, String? search) async {
     await Future.delayed(const Duration(milliseconds: 800)); // network delay
@@ -52,7 +52,7 @@ class _DropdownTestScreenState extends State<DropdownTestScreen> {
           .toList();
     }
     final int start = (page - 1) * 10;
-    final int end   = start + 10;
+    final int end = start + 10;
     if (start >= allNames.length) return [];
     return allNames.sublist(start, end.clamp(0, allNames.length));
   }
@@ -60,49 +60,51 @@ class _DropdownTestScreenState extends State<DropdownTestScreen> {
   @override
   void initState() {
     super.initState();
-    _loadInitialSelection();        // kick off the “what is selected?” call
+    _loadInitialSelection();
   }
 
   @override
   Widget build(BuildContext context) {
     if (_loadingInitial) {
-      return const Scaffold(               // simple splash while waiting
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
       appBar: AppBar(title: const Text('Paginated Dropdown Test')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GenericPaginatedDropdown<String>(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            key: _vpKey,
+            padding: const EdgeInsets.all(10),
+            width: double.infinity,
+            child: GenericPaginatedDropdown<String>(
+              viewportKey: _vpKey,
               selectedItem: _selectedName,
               searchable: true,
-              fetchItems  : _fetchNames,
-              onChanged   : (value) => setState(() => _selectedName = value),
-              itemLabel   : (s) => s,
-              hintText    : 'Select a name',
-              itemBuilder : (s) => Text(s,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.blue)),
-              errorStyle  :
-              TextStyles.regularText(fontSize: 12, color: Colors.red),
-              heading    : const Text(                 // 👈  the optional heading
-                'Choose a name',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+              fetchItems: _fetchNames,
+              onChanged: (value) => setState(() => _selectedName = value),
+              itemLabel: (s) => s,
+              hintText: 'Select a name',
+              itemBuilder: (s) => Text(
+                s,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
                 ),
               ),
+              errorStyle: TextStyles.regularText(
+                fontSize: 12,
+                color: Colors.red,
+              ),
+              heading: const Text(
+                // 👈  the optional heading
+                'Choose a name',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
             ),
-            const SizedBox(height: 20),
-            Text('Selected Name: ${_selectedName ?? 'None'}',
-                style: const TextStyle(fontSize: 16)),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
