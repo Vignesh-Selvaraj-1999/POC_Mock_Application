@@ -1,7 +1,7 @@
+// main.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:listview_mock_application/widget.dart';
-import 'font.dart';
 
 void main() => runApp(const MyApp());
 
@@ -28,14 +28,9 @@ class DropdownTestScreen extends StatefulWidget {
 class _DropdownTestScreenState extends State<DropdownTestScreen> {
   String? _selectedName;
   bool _loadingInitial = true;
-  final GlobalKey _vpKey = GlobalKey();
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // 1️⃣  Simulate an API that tells us which value is currently selected.
-  //     (Replace this with your real API call.)
-  // ──────────────────────────────────────────────────────────────────────────
   Future<void> _loadInitialSelection() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
     final String valueFromApi = 'Name 39';
     setState(() {
       _selectedName = valueFromApi;
@@ -44,7 +39,7 @@ class _DropdownTestScreenState extends State<DropdownTestScreen> {
   }
 
   Future<List<String>> _fetchNames(int page, String? search) async {
-    await Future.delayed(const Duration(milliseconds: 800)); // network delay
+    await Future.delayed(const Duration(milliseconds: 500));
     List<String> allNames = List.generate(100, (i) => 'Name ${i + 1}');
     if (search != null && search.isNotEmpty) {
       allNames = allNames
@@ -62,45 +57,73 @@ class _DropdownTestScreenState extends State<DropdownTestScreen> {
     super.initState();
     _loadInitialSelection();
   }
-
+  List<String> selectedItems = [];
   @override
   Widget build(BuildContext context) {
     if (_loadingInitial) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Paginated Dropdown Test')),
+      appBar: AppBar(
+        title: const Text('Paginated Dropdown Test'),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+      ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          // Red area to match your design
           Container(
-            key: _vpKey,
-            padding: const EdgeInsets.all(10),
+            height: 300,
+            color: Colors.green,
             width: double.infinity,
-            child: GenericPaginatedDropdown<String>(
-              viewportKey: _vpKey,
+            child:   GenericPaginatedDropdown<String>(
               selectedItem: _selectedName,
               searchable: true,
               fetchItems: _fetchNames,
               onChanged: (value) => setState(() => _selectedName = value),
               itemLabel: (s) => s,
               hintText: 'Select a name',
-              itemBuilder: (s) => Text(
-                s,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                ),
-              ),
-              errorStyle: TextStyles.regularText(
-                fontSize: 12,
-                color: Colors.red,
-              ),
-              heading: const Text(
-                // 👈  the optional heading
-                'Choose a name',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+          ),
+          // Blue area with dropdown
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              color: Colors.blue,
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Choose a name',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  GenericPaginatedDropdown<String>(
+                    selectedItem: _selectedName,
+                    searchable: true,
+                    fetchItems: _fetchNames,
+                    onChanged: (value) => setState(() => _selectedName = value),
+                    itemLabel: (s) => s,
+                    hintText: 'Select a name',
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      print('Selected Items: $selectedItems');
+                      // Or access via dropdown key:
+                      // print('Selected Items: ${dropdownKey.currentState?.selectedItems}');
+                    },
+                    child: Text('Print Selected Items (${selectedItems.length})'),
+                  ),
+                ],
               ),
             ),
           ),
