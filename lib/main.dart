@@ -57,13 +57,12 @@ class _DropdownTestScreenState extends State<DropdownTestScreen> {
     super.initState();
     _loadInitialSelection();
   }
+
   List<String> selectedItems = [];
   @override
   Widget build(BuildContext context) {
     if (_loadingInitial) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -77,10 +76,10 @@ class _DropdownTestScreenState extends State<DropdownTestScreen> {
         children: [
           // Red area to match your design
           Container(
-            height: 300,
-            color: Colors.green,
+            height: 600,
+            // color: Colors.green,
             width: double.infinity,
-            child:   GenericPaginatedDropdown<String>(
+            child: GenericPaginatedDropdown<String>(
               selectedItem: _selectedName,
               searchable: true,
               fetchItems: _fetchNames,
@@ -93,7 +92,7 @@ class _DropdownTestScreenState extends State<DropdownTestScreen> {
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(16),
-              color: Colors.blue,
+              // color: Colors.blue,
               width: double.infinity,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,6 +107,7 @@ class _DropdownTestScreenState extends State<DropdownTestScreen> {
                   ),
                   const SizedBox(height: 8),
                   GenericPaginatedDropdown<String>(
+                    multiSelect: true,
                     selectedItem: _selectedName,
                     searchable: true,
                     fetchItems: _fetchNames,
@@ -115,14 +115,16 @@ class _DropdownTestScreenState extends State<DropdownTestScreen> {
                     itemLabel: (s) => s,
                     hintText: 'Select a name',
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      print('Selected Items: $selectedItems');
-                      // Or access via dropdown key:
-                      // print('Selected Items: ${dropdownKey.currentState?.selectedItems}');
-                    },
-                    child: Text('Print Selected Items (${selectedItems.length})'),
-                  ),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     print('Selected Items: $selectedItems');
+                  //     // Or access via dropdown key:
+                  //     // print('Selected Items: ${dropdownKey.currentState?.selectedItems}');
+                  //   },
+                  //   child: Text(
+                  //     'Print Selected Items (${selectedItems.length})',
+                  //   ),
+                  // ),
                 ],
               ),
             ),
