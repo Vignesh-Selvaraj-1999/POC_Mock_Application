@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../components/custom_button..dart'; // ← fixed extra dot
 import '../components/custom_toggle_button.dart';
+import '../components/custom_toggle_switch.dart';
 
 class ButtonDemoScreen extends StatefulWidget {
   const ButtonDemoScreen({super.key});
@@ -16,7 +17,7 @@ class _ButtonDemoScreenState extends State<ButtonDemoScreen> {
   bool _darkMode = false;
   bool _muted     = false;
   bool _isActive  = false;
-
+  bool _wifi      = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +62,7 @@ class _ButtonDemoScreenState extends State<ButtonDemoScreen> {
             CustomButton(
               text: 'Gradient Button',
               gradient: const LinearGradient(
-                colors: [Colors.purple, Colors.deepPurpleAccent],
+                colors: [Colors.blue, Colors.red],
               ),
               onPressed: () => debugPrint('Gradient pressed'),
               fullWidth: false,
@@ -102,6 +103,21 @@ class _ButtonDemoScreenState extends State<ButtonDemoScreen> {
             CustomToggleButton(
               value: _isActive,
               onChanged: (v) => setState(() => _isActive = v),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Wi-Fi'),
+                  CustomToggleSwitch(
+                  value: _wifi,
+                  onChanged: (v) => setState(() => _wifi = v),
+                  onTrackColor: Colors.blue,
+                  offTrackColor: Colors.grey.shade400,
+                  onThumbColor: Colors.white,
+                  offThumbColor: Colors.white,
+                ),
+              ],
             ),
           ],
         ),
