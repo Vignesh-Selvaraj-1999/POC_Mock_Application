@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listview_mock_application/pages/ButtonDemoScreen.dart';
+import 'package:listview_mock_application/pages/EventCalendarScreen.dart';
+import 'package:listview_mock_application/pages/InputFieldDemoPage.dart';
 import 'pages/first_screen.dart';
 import 'pages/dropdown_test_screen.dart';
 
@@ -19,6 +21,8 @@ class MyApp extends StatelessWidget {
         '/':         (_) => const FirstScreen(),
         '/dropdown': (_) => const DropdownTestScreen(),
         '/button' : (_) => const ButtonDemoScreen(),
+        "/event_calendar": (_) => const CalendarEventScreen(),
+        "/input_field_demo": (_) => const InputFieldDemoPage(),
       },
     );
   }
