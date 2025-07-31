@@ -30,6 +30,16 @@ class FirstScreen extends StatelessWidget {
               child: const Text('Open input field demo page'),
               onPressed: () => Navigator.pushNamed(context, '/input_field_demo'),
             ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              child: const Text('Open stepper demo page'),
+              onPressed: () => Navigator.pushNamed(context, '/stepper_demo'),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              child: const Text('Open floating button page'),
+              onPressed: () => Navigator.pushNamed(context, '/floating_button'),
+            ),
           ],
         ),
       ),
