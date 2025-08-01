@@ -20,9 +20,9 @@ class MyApp extends StatelessWidget {
       // land on FirstScreen, jump to DropdownTestScreen with a named route
       initialRoute: '/',
       routes: {
-        '/':         (_) => const FirstScreen(),
+        '/': (_) => const FirstScreen(),
         '/dropdown': (_) => const DropdownTestScreen(),
-        '/button' : (_) => const ButtonDemoScreen(),
+        '/button': (_) => const ButtonDemoScreen(),
         "/event_calendar": (_) => const CalendarEventScreen(),
         "/input_field_demo": (_) => const InputFieldDemoPage(),
         "/stepper_demo": (_) => StepperDemoPage(),
