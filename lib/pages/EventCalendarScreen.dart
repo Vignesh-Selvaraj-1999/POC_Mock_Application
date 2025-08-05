@@ -7,7 +7,6 @@ class CalendarEventScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // generate 10 sample events
     final now = DateTime.now();
     final sampleEvents = List<Event>.generate(10, (i) {
       final start = now.add(Duration(hours: i * 3));
@@ -17,8 +16,8 @@ class CalendarEventScreen extends StatelessWidget {
         title: 'Event #${i + 1}',
         startDate: start,
         endDate: end,
-        isContinuous: i % 4 == 0,        // every 4th event is continuous
-        isZeroTimeEvent: i % 3 == 0,     // every 3rd event is zero-time
+        isContinuous: i % 4 == 0,
+        isZeroTimeEvent: i % 3 == 0,
       );
     });
 
@@ -26,18 +25,35 @@ class CalendarEventScreen extends StatelessWidget {
       appBar: AppBar(title: const Text("Calendar Events")),
       body: CalendarComponent<Event>(
         items: sampleEvents,
-        startBuilder: (e) => e.startDate,
-        endBuilder:   (e) => e.endDate,
-        titleBuilder: (e) => e.title,
-        labelBuilder: (e) => e.label,
-        colorBuilder: (e) => e.backgroundColor,
+        startBuilder:  (e) => e.startDate,
+        endBuilder:    (e) => e.endDate,
+        titleBuilder:  (e) => e.title,
+        labelBuilder:  (e) {
+          if (e.isZeroTimeEvent) return 'Zero-time';
+          if (e.isContinuous)  return 'Continuous';
+          return 'Regular';
+        },
+        colorBuilder:  (e) {
+          if (e.isZeroTimeEvent) return Colors.orange;
+          if (e.isContinuous)  return Colors.green;
+          return Colors.blue;
+        },
 
-        // only Month & Day tabs:
-        showDay:   true,
-        showWeek:  true,
         showMonth: true,
-      )
+        showWeek:  true,
+        showDay:   true,
+        onDaySelected: (date) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Selected date: $date')),
+          );
+        },
 
+        fetchEventsForDay: (date) async {
+          // TODO: replace with real API call
+          await Future.delayed(const Duration(seconds: 1));
+          return <Event>[]; // parse from API
+        },
+      ),
     );
   }
 }

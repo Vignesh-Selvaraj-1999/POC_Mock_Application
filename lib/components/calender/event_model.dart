@@ -18,6 +18,9 @@ class Event {
     required this.isZeroTimeEvent,
   });
 
+
+
+
   factory Event.fromJson(Map<String, dynamic> eventJson, Map<String, dynamic> timeJson, Map<String, String> schema) {
     return Event(
       id: eventJson[schema["eventIdKey"]] ?? '',
