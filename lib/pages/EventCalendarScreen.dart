@@ -1,57 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:listview_mock_application/pages/viewmodels/calendar_event_viewmodel.dart';
 import '../components/calender/calendar_component.dart';
 import '../components/calender/event_model.dart';
 
-class CalendarEventScreen extends StatelessWidget {
-  const CalendarEventScreen({super.key});
+class CalendarEventScreen extends StatefulWidget {
+  const CalendarEventScreen({Key? key}) : super(key: key);
+
+  @override
+  _CalendarEventScreenState createState() => _CalendarEventScreenState();
+}
+
+class _CalendarEventScreenState extends State<CalendarEventScreen> {
+  final _viewModel = CalendarEventViewModel();
+
+  @override
+  void initState() {
+    super.initState();
+    // populate our events once
+    _viewModel.loadSampleEvents();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-    final sampleEvents = List<Event>.generate(10, (i) {
-      final start = now.add(Duration(hours: i * 3));
-      final end   = start.add(Duration(hours: 2 + (i % 3)));
-      return Event(
-        id: '$i',
-        title: 'Event #${i + 1}',
-        startDate: start,
-        endDate: end,
-        isContinuous: i % 4 == 0,
-        isZeroTimeEvent: i % 3 == 0,
-      );
-    });
-
     return Scaffold(
       appBar: AppBar(title: const Text("Calendar Events")),
       body: CalendarComponent<Event>(
-        items: sampleEvents,
-        startBuilder:  (e) => e.startDate,
-        endBuilder:    (e) => e.endDate,
-        titleBuilder:  (e) => e.title,
-        labelBuilder:  (e) {
+        items:        _viewModel.events,
+        startBuilder: (e) => e.startDate,
+        endBuilder:   (e) => e.endDate,
+        titleBuilder: (e) => e.title,
+        labelBuilder: (e) {
           if (e.isZeroTimeEvent) return 'Zero-time';
           if (e.isContinuous)  return 'Continuous';
           return 'Regular';
         },
-        colorBuilder:  (e) {
+        colorBuilder: (e) {
           if (e.isZeroTimeEvent) return Colors.orange;
           if (e.isContinuous)  return Colors.green;
           return Colors.blue;
         },
-
         showMonth: true,
         showWeek:  true,
         showDay:   true,
+
         onDaySelected: (date) {
+          // update VM and show a snackbar
+          setState(() => _viewModel.onDaySelected(date));
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Selected date: $date')),
           );
         },
 
-        fetchEventsForDay: (date) async {
-          await Future.delayed(const Duration(seconds: 1));
-          return <Event>[]; // parse from API
-        },
+        fetchEventsForDay: _viewModel.fetchEventsForDay,
       ),
     );
   }
