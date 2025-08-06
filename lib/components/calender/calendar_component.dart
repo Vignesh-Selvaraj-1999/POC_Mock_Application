@@ -183,6 +183,7 @@ class _CalendarComponentState<T> extends State<CalendarComponent<T>>
         // 1. Format tabs
         TabBar(
           controller: _formatController,
+          onTap: (_) => setState(() {}),
           tabs: _views.map((v) {
             switch (v) {
               case _CalendarView.month: return const Tab(text: 'Month');

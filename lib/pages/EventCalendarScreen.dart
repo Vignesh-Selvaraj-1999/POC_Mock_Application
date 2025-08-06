@@ -49,7 +49,6 @@ class CalendarEventScreen extends StatelessWidget {
         },
 
         fetchEventsForDay: (date) async {
-          // TODO: replace with real API call
           await Future.delayed(const Duration(seconds: 1));
           return <Event>[]; // parse from API
         },
