@@ -40,6 +40,11 @@ class FirstScreen extends StatelessWidget {
               child: const Text('Open floating button page'),
               onPressed: () => Navigator.pushNamed(context, '/floating_button'),
             ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              child: const Text('Open permission test page'),
+              onPressed: () => Navigator.pushNamed(context, '/permission_dialog'),
+            ),
           ],
         ),
       ),
